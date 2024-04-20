@@ -27,3 +27,8 @@ vim.keymap.set("v", "<leader>g", "g_")
 
 -- Shortcut to make file executeble
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
+
+-- Mapping esc to caps lock so I don't need to travel so far
+vim.keymap.set("n", "<A-e>", "<Esc>")
+vim.keymap.set("i", "<A-e>", "<Esc>")
+vim.keymap.set("v", "<A-e>", "<Esc>")

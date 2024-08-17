@@ -31,7 +31,6 @@ vim.keymap.set("i", "<A-e>", "<Esc>")
 vim.keymap.set("v", "<A-e>", "<Esc>")
 
 --Delete line without deleting indice and begin editiing
-vim.keymap.set("n", "<leader>D", "_Da")
-vim.keymap.set("v", "<leader>D", "_Da")
-
+vim.keymap.set("n", "<leader>D", "g__\"_Da")
+vim.keymap.set("v", "<leader>D", "g__\"_Da")
 

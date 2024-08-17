@@ -22,9 +22,6 @@ vim.keymap.set("v", "<leader>d", "\"_d")
 
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>") --supposed to switch project, dosen't work Nixos?
 
-vim.keymap.set("n", "<leader>g", "g_")
-vim.keymap.set("v", "<leader>g", "g_")
-
 -- Shortcut to make file executeble
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
@@ -32,3 +29,9 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 vim.keymap.set("n", "<A-e>", "<Esc>")
 vim.keymap.set("i", "<A-e>", "<Esc>")
 vim.keymap.set("v", "<A-e>", "<Esc>")
+
+--Delete line without deleting indice and begin editiing
+vim.keymap.set("n", "<leader>D", "_Da")
+vim.keymap.set("v", "<leader>D", "_Da")
+
+

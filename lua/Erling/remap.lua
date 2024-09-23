@@ -39,21 +39,21 @@ vim.keymap.set("n", ",", "/")
 vim.keymap.set("v", ",", "/")
 
 vim.keymap.set("n", "ø", "[")
-vim.keymap.set("i", "ø", "[")
+-- vim.keymap.set("i", "ø", "[")
 vim.keymap.set("v", "ø", "[")
 
 vim.keymap.set("n", "æ", "]")
-vim.keymap.set("i", "æ", "]")
+-- vim.keymap.set("i", "æ", "]")
 vim.keymap.set("v", "æ", "]")
 
 vim.keymap.set("n", "¤", "$")
-vim.keymap.set("i", "¤", "$")
+-- vim.keymap.set("i", "¤", "$")
 vim.keymap.set("v", "¤", "$")
 
 vim.keymap.set("n", "<S-Ø>", "{")
-vim.keymap.set("i", "<S-Ø>", "{")
+-- vim.keymap.set("i", "<S-Ø>", "{")
 vim.keymap.set("v", "<S-Ø>", "{")
 
 vim.keymap.set("n", "<S-Æ>", "}")
-vim.keymap.set("i", "<S-Æ>", "}")
+-- vim.keymap.set("i", "<S-Æ>", "}")
 vim.keymap.set("v", "<S-Æ>", "}")

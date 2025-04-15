@@ -57,3 +57,17 @@ vim.keymap.set("v", "<S-Ø>", "{")
 vim.keymap.set("n", "<S-Æ>", "}")
 -- vim.keymap.set("i", "<S-Æ>", "}")
 vim.keymap.set("v", "<S-Æ>", "}")
+
+-- Normal error handeling in go
+vim.keymap.set(
+    "n",
+    "<leader>ee",
+    "oif err != nil {<CR>}<Esc>Oreturn err<Esc>"
+)
+
+-- Normal python imports
+vim.keymap.set(
+    "n",
+    "<leader>pi",
+    "iimport pandas as pd<ESC>oimport seaborn as sns<ESC>oimport numpy as np<ESC>oimport matplotlib.pyplot as plt"
+)

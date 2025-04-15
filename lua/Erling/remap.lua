@@ -69,5 +69,5 @@ vim.keymap.set(
 vim.keymap.set(
     "n",
     "<leader>pi",
-    "iimport pandas as pd<ESC>oimport seaborn as sns<ESC>oimport numpy as np<ESC>oimport matplotlib.pyplot as plt"
+    "iimport pandas as pd<ESC>oimport seaborn as sns<ESC>oimport numpy as np<ESC>oimport matplotlib.pyplot as plt<ESC>o<ESC>o"
 )

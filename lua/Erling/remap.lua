@@ -50,13 +50,13 @@ vim.keymap.set("n", "¤", "$")
 -- vim.keymap.set("i", "¤", "$")
 vim.keymap.set("v", "¤", "$")
 
-vim.keymap.set("n", "<S-Ø>", "{")
--- vim.keymap.set("i", "<S-Ø>", "{")
-vim.keymap.set("v", "<S-Ø>", "{")
+-- Fix for Norwegian Layout
+-- Map the literal character 'Ø', not the Shift combo
+vim.keymap.set("n", "Ø", "{")
+vim.keymap.set("v", "Ø", "{")
 
-vim.keymap.set("n", "<S-Æ>", "}")
--- vim.keymap.set("i", "<S-Æ>", "}")
-vim.keymap.set("v", "<S-Æ>", "}")
+vim.keymap.set("n", "Æ", "}")
+vim.keymap.set("v", "Æ", "}")
 
 -- Normal error handeling in go
 vim.keymap.set(
@@ -71,3 +71,7 @@ vim.keymap.set(
     "<leader>pi",
     "iimport pandas as pd<ESC>oimport seaborn as sns<ESC>oimport numpy as np<ESC>oimport matplotlib.pyplot as plt<ESC>o<ESC>o"
 )
+
+-- Spellchecker
+vim.keymap.set("n", "<leader>se", ":setlocal spell spelllang=en_us<cr>", { desc = "spelling en", noremap = true })
+vim.keymap.set("n", "<leader>sd", ":setlocal nospell<cr>", { desc = "spelling disable", noremap = true })

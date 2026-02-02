@@ -67,7 +67,16 @@ local plugins = {
 			{'rafamadriz/friendly-snippets'},
 		},
 	},
-    'ThePrimeagen/vim-be-good'
+    'ThePrimeagen/vim-be-good',
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        config = true
+        -- usage:
+        -- press ( -> (|)
+        -- press { -> {|}
+        -- press " -> "|"
+    }
 }
 
 require("lazy").setup(plugins, {})

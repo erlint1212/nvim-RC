@@ -45,6 +45,15 @@ local plugins = {
 	'nvim-treesitter/playground', --change visual
 	'theprimeagen/harpoon', --quickly get between files
 	'mbbill/undotree', --See log and go back
+    {
+        "L3MON4D3/LuaSnip",
+        -- follow latest release.
+        version = "v2.*", 
+        -- install jsregexp (optional!).
+        -- This compiles the library needed for the warning you saw
+        build = "make install_jsregexp",
+        dependencies = { "rafamadriz/friendly-snippets" },
+    },
 	'tpope/vim-fugitive', --See current git state
 	 {
 		'VonHeikemen/lsp-zero.nvim',

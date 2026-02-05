@@ -17,6 +17,16 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.mapleader = " "
 
+-- Filter out the "position_encoding" warning from llm.nvim/neovim
+local default_notify = vim.notify
+vim.notify = function(msg, level, opts)
+    -- specific string matching to ignore the warning
+    if msg and msg:find("position_encoding param is required") then
+        return
+    end
+    default_notify(msg, level, opts)
+end
+
 local plugins = {
     {
       "lervag/vimtex",
@@ -85,7 +95,8 @@ local plugins = {
         -- press ( -> (|)
         -- press { -> {|}
         -- press " -> "|"
-    }
+    },
+    {"huggingface/llm.nvim"}
 }
 
 require("lazy").setup(plugins, {})

@@ -1,0 +1,44 @@
+local minuet = require("minuet")
+
+minuet.setup({
+    provider = "ollama",
+
+    provider_options = {
+        ollama = {
+            -- 1. Use the BASE model. 
+            -- "Instruct" models are bad at ghost text (they try to chat).
+            -- "Base" models are pure code completion engines.
+            model = "qwen2.5-coder:14b-base-q4_k_m", 
+            
+            endpoint = "http://127.0.0.1:11434",
+            
+            options = {
+                -- 2. Give it enough "vision" to see your whole file
+                num_ctx = 8192,
+                num_predict = 1024, 
+                
+                -- 3. CRITICAL: Remove "\n\n" from stop tokens.
+                -- We only stop when the model is truly done.
+                stop = { "<|endoftext|>", "<|file_separator|>" },
+            },
+        },
+    },
+
+    -- Enable "Ghost Text" (Virtual Text)
+    virtualtext = {
+        auto_trigger = true,
+        keymap = {
+            accept = "<A-y>", 
+            reject = "<A-e>",
+            accept_word = "<A-w>",
+            accept_line = "<A-l>",
+        },
+    },
+
+    -- 4. Enable Debugging (Optional, acts as a sanity check)
+    -- If it still fails, this will print errors to :messages
+    notify = 'debug',
+
+    debounce = 150,
+    filetypes = { "*" },
+})

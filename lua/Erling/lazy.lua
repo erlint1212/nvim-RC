@@ -18,14 +18,14 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.mapleader = " "
 
 -- Filter out the "position_encoding" warning from llm.nvim/neovim
-local default_notify = vim.notify
-vim.notify = function(msg, level, opts)
-    -- specific string matching to ignore the warning
-    if msg and msg:find("position_encoding param is required") then
-        return
-    end
-    default_notify(msg, level, opts)
-end
+-- local default_notify = vim.notify
+-- vim.notify = function(msg, level, opts)
+--     -- specific string matching to ignore the warning
+--     if msg and msg:find("position_encoding param is required") then
+--         return
+--     end
+--     default_notify(msg, level, opts)
+-- end
 
 local plugins = {
     {
@@ -58,7 +58,7 @@ local plugins = {
     {
         "L3MON4D3/LuaSnip",
         -- follow latest release.
-        version = "v2.*", 
+        -- version = "v2.*", 
         -- install jsregexp (optional!).
         -- This compiles the library needed for the warning you saw
         build = "make install_jsregexp",
@@ -96,7 +96,47 @@ local plugins = {
         -- press { -> {|}
         -- press " -> "|"
     },
-    {"huggingface/llm.nvim"}
+    {
+      "olimorris/codecompanion.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
+      }
+    },
+    { 
+        "j-hui/fidget.nvim",
+        opts = {
+            notification = {
+                override_vim_notify = true,
+            },
+        },
+    },
+    { "lewis6991/gitsigns.nvim" }, -- See git changes in the sidebar
+    { "stevearc/conform.nvim" }, -- Auto-formatting
+    { 
+        "kylechui/nvim-surround",
+        event = "VeryLazy",
+        config = true,
+    }, -- Change surrounding quotes/brackets easily
+    { 
+        "lukas-reineke/indent-blankline.nvim", -- Line identation visualizer
+        main = "ibl", -- This is important for version 3+
+        opts = {},
+    },
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        config = function()
+            require("mason-tool-installer").setup({
+                ensure_installed = {
+                    "black",   -- Python formatter
+                    "isort",   -- Python import sorter
+                    "stylua",  -- Lua formatter
+                    -- "prettier", -- JS/TS formatter
+                    "sqlfluff", -- SQL dbt formatter
+                },
+            })
+        end,
+    }
 }
 
 require("lazy").setup(plugins, {})

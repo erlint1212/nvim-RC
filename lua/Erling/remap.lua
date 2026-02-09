@@ -58,6 +58,10 @@ vim.keymap.set("v", "Ø", "{")
 vim.keymap.set("n", "Æ", "}")
 vim.keymap.set("v", "Æ", "}")
 
+-- Remap H and L to start/end of line (easier than ^ and $)
+vim.keymap.set("n", "H", "^")
+vim.keymap.set("n", "L", "g_") -- g_ goes to last non-blank char (often better than $)
+
 -- Normal error handeling in go
 vim.keymap.set(
     "n",

@@ -114,7 +114,7 @@ local plugins = {
     { "lewis6991/gitsigns.nvim" }, -- See git changes in the sidebar
     { "stevearc/conform.nvim" }, -- Auto-formatting
     { 
-        "kylechui/nvim-surround",
+        "kylechui/nvim-surround", -- ysiw)
         event = "VeryLazy",
         config = true,
     }, -- Change surrounding quotes/brackets easily
@@ -136,6 +136,9 @@ local plugins = {
                 },
             })
         end,
+    },
+    { 
+        "nvim-pack/nvim-spectre",
     }
 }
 

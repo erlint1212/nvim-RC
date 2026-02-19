@@ -12,6 +12,8 @@ conform.setup({
         yaml = { "prettierd", "prettier", stop_after_first = true },
         sql = { "sqlfluff" },
         tex = { "latexindent" },
+        css = { "prettier" },
+        html = { "prettier" },
     },
 
     formatters = {

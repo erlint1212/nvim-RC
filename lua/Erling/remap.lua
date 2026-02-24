@@ -48,6 +48,7 @@ vim.keymap.set("v", "æ", "]")
 
 -- make it so the same key works for Nor keyboard
 vim.keymap.set("n", "¨", "~")
+vim.keymap.set("v", "¨", "~")
 
 vim.keymap.set("n", "¤", "$")
 -- vim.keymap.set("i", "¤", "$")

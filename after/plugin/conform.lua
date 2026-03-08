@@ -14,23 +14,14 @@ conform.setup({
         tex = { "latexindent" },
         css = { "prettier" },
         html = { "prettier" },
+        kotlin = { "ktlint" },
     },
 
     formatters = {
         sqlfluff = {
-            -- 1. Standard args (removed --force since it's deprecated)
-            args = { 
-                "fix", 
-                "--dialect", "snowflake", 
-                "--templater", "jinja",
-                "--ignore", "parsing,templating",  -- Ignore the scary stuff
-                "-" 
-            },
-            
-            -- 2. THE FIX: Tell Conform that exit code 1 is NOT a crash.
-            --    0 = Perfect run
-            --    1 = Fixed some things, but left others (This is what you have)
-            exit_codes = { 0, 1 },
+          args = { "fix", "--dialect", "snowflake", "--templater", "dbt", "--ignore", "parsing,templating", "-" },
+          exit_codes = { 0, 1 },
+          cwd = require("conform.util").root_file({ "dbt_project.yml" }),
         },
     },
 })
@@ -45,7 +36,7 @@ vim.api.nvim_create_user_command("FormatProject", function(args)
   local cwd = vim.fn.getcwd()
   
   -- 2. Define patterns to match (Edit these!)
-  local patterns = { "*.lua", "*.py", "*.js", "*.ts", "*.rs" }
+  local patterns = { "*.lua", "*.py", "*.js", "*.ts", "*.rs", "*.kt", "*.kts", "*.sql" }
   
   -- 3. Build the find command
   -- Note: Using 'git ls-files' is usually safer than 'find' if you use git,
@@ -79,6 +70,7 @@ vim.api.nvim_create_user_command("FormatProject", function(args)
     
     require("conform").format({
       bufnr = bufnr,
+      async = false,
       lsp_fallback = true,
     })
     

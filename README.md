@@ -29,7 +29,7 @@ I needed a setup that solved three problems at once:
 2. **Clone the repo:**
 
    ```bash
-   git clone https://github.com/erlint1212/nordvim.git ~/.config/nvim
+   git clone https://github.com/erlint1212/nvim-RC.git ~/.config/nvim
    ```
 
 3. **Launch Neovim:**
@@ -189,14 +189,14 @@ Contributions, bug reports, and feature suggestions are welcome.
 1. **Fork and clone** the repository:
 
    ```bash
-   git clone https://github.com/erlint1212/nordvim.git
+   git clone https://github.com/erlint1212/nvim-RC.git
    cd nordvim
    ```
 
 2. **Create a symlink** to test without overwriting your main config:
 
    ```bash
-   NVIM_APPNAME=nordvim-dev ln -s "$(pwd)" ~/.config/nordvim-dev
+   NVIM_APPNAME=nordvim-dev ln -s "$(pwd)" ~/.config/nvim-RC-dev
    ```
 
    Then launch with:

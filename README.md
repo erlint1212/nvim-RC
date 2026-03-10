@@ -4,7 +4,7 @@
 
 NordVim is a fully configured Neovim development environment that combines powerful IDE features — LSP, autocompletion, AI-assisted coding, project-wide search-and-replace — with first-class support for the Nordic keyboard layout, so you never have to fight your own hardware to use Vim motions.
 
-![Insert Screenshot or GIF here]
+<!-- ![Insert Screenshot or GIF here] -->
 
 ## Motivation
 

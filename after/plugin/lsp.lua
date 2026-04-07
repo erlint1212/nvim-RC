@@ -55,6 +55,9 @@ require('mason-lspconfig').setup({
   }
 })
 
+require('lspconfig').pyright.setup({})
+require('lspconfig').gopls.setup({})
+
 local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}
 

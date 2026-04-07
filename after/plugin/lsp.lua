@@ -55,8 +55,12 @@ require('mason-lspconfig').setup({
   }
 })
 
+require('lspconfig').rust_analyzer.setup({})
+require('lspconfig').lua_ls.setup({})
 require('lspconfig').pyright.setup({})
 require('lspconfig').gopls.setup({})
+require('lspconfig').cssls.setup({})
+require('lspconfig').html.setup({})
 
 local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}

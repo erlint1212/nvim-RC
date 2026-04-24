@@ -55,12 +55,15 @@ require('mason-lspconfig').setup({
   }
 })
 
-require('lspconfig').rust_analyzer.setup({})
-require('lspconfig').lua_ls.setup({})
-require('lspconfig').pyright.setup({})
-require('lspconfig').gopls.setup({})
-require('lspconfig').cssls.setup({})
-require('lspconfig').html.setup({})
+vim.lsp.config('rust_analyzer', {})
+vim.lsp.config('lua_ls', {})
+vim.lsp.config('pyright', {})
+vim.lsp.config('gopls', {})
+vim.lsp.config('cssls', {})
+vim.lsp.config('html', {})
+vim.lsp.config('nil_ls', {})
+
+vim.lsp.enable({ 'rust_analyzer', 'lua_ls', 'pyright', 'gopls', 'cssls', 'html', 'nil_ls' })
 
 local cmp = require('cmp')
 local cmp_select = {behavior = cmp.SelectBehavior.Select}

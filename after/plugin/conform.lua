@@ -15,6 +15,7 @@ conform.setup({
         css = { "prettier" },
         html = { "prettier" },
         kotlin = { "ktlint" },
+        nix = { "nixfmt" },
     },
 
     formatters = {
@@ -36,7 +37,7 @@ vim.api.nvim_create_user_command("FormatProject", function(args)
   local cwd = vim.fn.getcwd()
   
   -- 2. Define patterns to match (Edit these!)
-  local patterns = { "*.lua", "*.py", "*.js", "*.ts", "*.rs", "*.kt", "*.kts", "*.sql" }
+  local patterns = { "*.lua", "*.py", "*.js", "*.ts", "*.rs", "*.kt", "*.kts", "*.sql", "*.nix" }
   
   -- 3. Build the find command
   -- Note: Using 'git ls-files' is usually safer than 'find' if you use git,

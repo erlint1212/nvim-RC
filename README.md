@@ -13,7 +13,7 @@ If you've ever tried to use Vim on a Norwegian keyboard, you know the pain. Keys
 I needed a setup that solved three problems at once:
 
 1. **The Nordic keyboard tax.** Characters essential to Vim motions (`[]{}$~`) require `AltGr` or `Shift+AltGr` on a Norwegian layout. NordVim remaps `ø`, `æ`, `Ø`, `Æ`, `¤`, and `¨` to their Vim equivalents, giving you the same fluency as a US-layout user — without switching your OS keymap.
-2. **Tool sprawl.** I was tired of stitching together LSP, formatting, git integration, snippets, and an AI assistant from scratch every time I set up a new machine. NordVim bundles everything behind [lazy.nvim](https://github.com/folke/lazy.nvim) so the full stack installs in one shot.
+2. **Tool sprawl.** I was tired of stitching together LSP, formatting, linting, git integration, snippets, and an AI assistant from scratch every time I set up a new machine. NordVim bundles everything behind [lazy.nvim](https://github.com/folke/lazy.nvim) so the full stack installs in one shot.
 3. **Local-first AI.** Cloud-based copilots leak context and cost money. NordVim ships with [CodeCompanion](https://github.com/olimorris/codecompanion.nvim) pre-configured against a **local Ollama** instance (Qwen 2.5 Coder 14B), giving you inline completions, chat, and even automatic conventional commit messages — all offline.
 
 ## Quick Start
@@ -38,7 +38,7 @@ I needed a setup that solved three problems at once:
    nvim
    ```
 
-   On first launch, **lazy.nvim** will bootstrap itself and install every plugin automatically. Mason will then fetch the configured LSP servers and formatters. Give it a minute, restart Neovim, and you're ready.
+   On first launch, **lazy.nvim** will bootstrap itself and install every plugin automatically. Mason will then fetch the configured LSP servers, formatters, and linters. Give it a minute, restart Neovim, and you're ready.
 
 4. *(Optional)* **Enable AI features** — install [Ollama](https://ollama.com) and pull the default model:
 
@@ -60,9 +60,15 @@ I needed a setup that solved three problems at once:
 | **Autocompletion** | nvim-cmp | Completions from LSP, snippets, paths, and buffers |
 | **Snippets** | LuaSnip + friendly-snippets | VS Code-compatible snippet library |
 | **Formatting** | conform.nvim | Per-language auto-format on demand or project-wide |
+| **Linting** | nvim-lint | On-save diagnostics for Go and Python |
+| **Diagnostics List** | trouble.nvim | Pretty list for diagnostics, references, and the quickfix |
+| **Tool Installer** | mason-tool-installer | Auto-installs formatters and linters via Mason |
 | **Git** | Fugitive + Gitsigns | Status, blame, diffs, and sign-column indicators |
 | **Search & Replace** | Spectre | Project-wide find-and-replace with live preview |
 | **AI Assistant** | CodeCompanion + Ollama | Local LLM chat, inline edits, and commit generation |
+| **Pairs & Surround** | nvim-autopairs + nvim-surround | Auto-close brackets and edit surrounding pairs (`ysiw)`) |
+| **Indent Guides** | indent-blankline | Visual indentation lines |
+| **Notifications** | fidget.nvim | Pretty LSP progress notifications |
 | **Theme** | Rosé Pine | Elegant, low-contrast colorscheme |
 | **Statusline** | Lualine | Informative bar showing mode, branch, diagnostics |
 | **LaTeX** | VimTeX | Compilation, forward/inverse search with Okular |
@@ -81,11 +87,19 @@ I needed a setup that solved three problems at once:
 | `<leader>ps` | Normal | Grep across project |
 | `<leader>a` | Normal | Add file to Harpoon |
 | `<C-e>` | Normal | Toggle Harpoon quick menu |
-| `<C-1>` … `<C-4>` | Normal | Jump to Harpoon slot 1–4 |
+| `<leader>1` … `<leader>4` | Normal | Jump to Harpoon slot 1–4 |
 | `J` / `K` | Visual | Move selected block down / up |
 | `H` / `L` | Normal | Jump to first / last non-blank character |
+| `<C-d>` / `<C-u>` | Normal | Half-page scroll (auto-centers cursor) |
+| `n` / `N` | Normal | Next / previous search match (auto-centers) |
+| `<A-e>` | Any | Alternative to `<Esc>` (easier reach) |
 | `<leader>u` | Normal | Toggle Undotree |
 | `<leader>x` | Normal | Make current file executable |
+| `<leader>D` | Normal / Visual | Delete line contents, keep indent, enter insert |
+| `<leader>y` / `<leader>Y` | Normal / Visual | Yank to system clipboard |
+| `<leader>d` | Normal / Visual | Delete without copying to register |
+| `<leader>p` | Visual | Paste without overwriting clipboard |
+| `<leader>se` / `<leader>sd` | Normal | Enable / disable English spell check |
 
 #### Norwegian Keyboard Remaps
 
@@ -110,7 +124,17 @@ I needed a setup that solved three problems at once:
 | `<leader>vca` | Normal | Code actions |
 | `<leader>vrr` | Normal | Find all references |
 | `<leader>vrn` | Normal | Rename symbol |
+| `[d` / `]d` | Normal | Next / previous diagnostic |
 | `<C-h>` | Insert | Signature help |
+
+#### Diagnostics & Lists
+
+| Binding | Mode | Action |
+|---|---|---|
+| `<leader>xx` | Normal | Toggle buffer diagnostics (Trouble) |
+| `<leader>xq` | Normal | Toggle quickfix list (Trouble) |
+| `<leader>xw` | Normal | Workspace diagnostics (Telescope picker) |
+| `<leader>l` | Normal | Manually trigger linting on current file |
 
 #### Git
 
@@ -136,18 +160,33 @@ I needed a setup that solved three problems at once:
 | `<leader>ci` | Normal | Inline AI prompt |
 | `<leader>ca` | Visual | AI actions on selection |
 
+#### Snippet Shortcuts
+
+| Binding | Mode | Action |
+|---|---|---|
+| `<leader>ee` | Normal | Insert Go `if err != nil` error-handling block |
+| `<leader>pi` | Normal | Insert standard Python data-science imports (pandas, seaborn, numpy, matplotlib) |
+
 ### Formatting Configuration
 
 Conform auto-formatters are configured per filetype:
 
 - **Lua** → `stylua`
-- **Python** → `isort` + `black`
+- **Python** → `ruff`
 - **JavaScript / TypeScript** → `prettierd` (fallback: `prettier`)
 - **Go** → `goimports` + `gofmt`
 - **SQL** → `sqlfluff` (Snowflake dialect, dbt templater)
 - **LaTeX** → `latexindent`
 - **YAML / CSS / HTML** → `prettier`
 - **Kotlin** → `ktlint`
+- **Nix** → `nixfmt`
+
+### Linting Configuration
+
+nvim-lint runs automatically on `BufEnter`, `BufWritePost`, and `InsertLeave`:
+
+- **Go** → `golangcilint`
+- **Python** → `ruff`
 
 ### Treesitter Parsers
 
@@ -168,6 +207,8 @@ Parsers are pre-configured for: **Nix, Python, GDScript, JavaScript, TypeScript,
 │   ├── telescope.lua
 │   ├── lsp.lua
 │   ├── treesitter.lua
+│   ├── lint.lua
+│   ├── trouble.lua
 │   ├── harpoon.lua
 │   ├── undotree.lua
 │   ├── conform.lua
@@ -209,6 +250,7 @@ Contributions, bug reports, and feature suggestions are welcome.
    - All plugins install cleanly (`:Lazy sync`)
    - LSP servers start without errors (`:LspInfo`)
    - Formatting runs correctly (`<leader>f` on a test file)
+   - Linting fires on save for Go and Python files
    - Treesitter parsers are healthy (`:TSInstallInfo`)
 
 4. **Open a pull request** with a clear description of *what* changed and *why*.

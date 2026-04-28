@@ -147,7 +147,12 @@ local plugins = {
     {
         "mfussenegger/nvim-lint",
         event = { "BufReadPre", "BufNewFile" },
-    }
+    },
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {},
+    },
 }
 
 require("lazy").setup(plugins, {})

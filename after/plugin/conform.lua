@@ -6,7 +6,7 @@ conform.setup({
 
     formatters_by_ft = {
         lua = { "stylua" },
-        python = { "isort", "black" },
+        python = { "ruff" },
         javascript = { "prettierd", "prettier", stop_after_first = true },
         go = { "goimports", "gofmt" },
         yaml = { "prettierd", "prettier", stop_after_first = true },

@@ -3,6 +3,7 @@ local lint = require("lint")
 -- 1. Assign golangcilint to Go files
 lint.linters_by_ft = {
     go = { "golangcilint" },
+    python = { "ruff" },
 }
 
 -- 2. Create an autocommand to trigger the linter automatically

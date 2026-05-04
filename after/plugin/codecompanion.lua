@@ -1,42 +1,57 @@
-local cc_adapters = require("codecompanion.adapters")
-cc_adapters.copilot = nil
-
--- CodeCompanion setup
 require("codecompanion").setup({
-  enabled_adapters = {
-    "ollama",
-    "ollama_commit",
-  },
-
   strategies = {
-    chat   = { adapter = "ollama" },
-    inline = { adapter = "ollama" },
-    agent  = { adapter = "ollama" },
+    chat   = { adapter = "lmstudio" },
+    inline = { adapter = "lmstudio" },
+    agent  = { adapter = "lmstudio" },
   },
 
   adapters = {
-    -- Default Ollama adapter
-    ollama = function()
-      return require("codecompanion.adapters").extend("ollama", {
-        options = {
-          model = "qwen2.5-coder:14b-instruct-q4_k_m",
-        },
-      })
-    end,
+    http = {
+      -- Don't auto-load Copilot/OpenAI/Anthropic/etc. on startup
+      opts = {
+        show_defaults = false,
+      },
 
-    -- Commit adapter (HEADLESS + constrained)
-    ollama_commit = function()
-      return require("codecompanion.adapters").extend("ollama", {
-        options = {
-          model = "qwen2.5-coder:14b-instruct-q4_k_m",
-        },
-        parameters = {
-          num_predict = 300,
-          temperature = 0.2,
-          stop = { "```", "##", "\n\n\n" },
-        },
-      })
-    end,
+      -- Default LM Studio adapter
+      lmstudio = function()
+        return require("codecompanion.adapters").extend("openai_compatible", {
+          env = {
+            url = "http://localhost:1234",
+            api_key = "lm-studio",          -- LM Studio ignores this, but a value is required
+            chat_url = "/v1/chat/completions",
+            models_endpoint = "/v1/models",
+          },
+          schema = {
+            model = {
+              default = "qwen/qwen3.5-9b",
+            },
+          },
+        })
+      end,
+
+      -- Commit adapter (constrained for short, focused output)
+      lmstudio_commit = function()
+        return require("codecompanion.adapters").extend("openai_compatible", {
+          env = {
+            url = "http://localhost:1234",
+            api_key = "lm-studio",
+            chat_url = "/v1/chat/completions",
+            models_endpoint = "/v1/models",
+          },
+          schema = {
+            model = {
+              default = "qwen/qwen3.5-9b",
+            },
+            temperature = {
+              default = 0.2,
+            },
+            max_completion_tokens = {
+              default = 300,
+            },
+          },
+        })
+      end,
+    },
   },
 
   prompt_library = {
@@ -47,7 +62,7 @@ require("codecompanion").setup({
         index = 10,
         is_slash_cmd = false,
         auto_submit = true,
-        adapter = "ollama_commit",
+        adapter = "lmstudio_commit",
       },
       prompts = {
         {
@@ -102,4 +117,4 @@ vim.keymap.set("v", "<leader>ca", "<cmd>CodeCompanionActions<cr>", { noremap = t
 vim.keymap.set({ "n", "v" }, "<leader>ch", "<cmd>CodeCompanionActions<cr>", { noremap = true, silent = true })
 
 -- 4. Quick Inline Prompt (Normal Mode)
-vim.keymap.set("n", "<leader>ci", "<cmd>CodeCompanion<cr>", { noremap = true, silent = true, desc = "Inline AI Prompt" })-- Map <C-a> (or your choice) to trigger the inline assistant
+vim.keymap.set("n", "<leader>ci", "<cmd>CodeCompanion<cr>", { noremap = true, silent = true, desc = "Inline AI Prompt" })

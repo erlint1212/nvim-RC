@@ -131,7 +131,7 @@ local plugins = {
                     "black",   -- Python formatter
                     "isort",   -- Python import sorter
                     "stylua",  -- Lua formatter
-                    -- "prettier", -- JS/TS formatter
+                    "prettier", -- JS/TS formatter
                     "sqlfluff", -- SQL dbt formatter
                 },
             })

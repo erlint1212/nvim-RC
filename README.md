@@ -18,6 +18,39 @@ I needed a setup that solved three problems at once:
 
 ## Quick Start
 
+### fedora workstation (gnome)
+
+```bash
+sudo dnf install gcc make git
+```
+
+```bash
+sudo dnf install ripgrep fd-find wl-clipboard
+```
+
+```bash
+sudo dnf install nodejs npm python3 python3-pip
+```
+
+```bash
+sudo dnf install okular latexmk texlive-scheme-medium
+```
+
+```bash
+sudo dnf install tmux
+```
+
+```bash
+sudo dnf install unzip gzip tar curl wget python3 python3-pip python3-virtualenv nodejs npm golang rust cargo java-latest-openjdk
+```
+
+```bash
+sudo dnf install unzip gzip tar curl wget
+```
+
+
+### nixos
+
 **Prerequisites:** Neovim **≥ 0.9**, Git, and a [Nerd Font](https://www.nerdfonts.com/) installed in your terminal.
 
 1. **Back up your existing config** (if any):

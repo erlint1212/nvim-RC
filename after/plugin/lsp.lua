@@ -41,10 +41,10 @@ require('mason-lspconfig').setup({
   ensure_installed = {
       'rust_analyzer', 
       'lua_ls',
-      -- 'pyright',       -- Python
-      -- 'gopls',         -- Go
-      -- 'cssls',         -- CSS
-      -- 'html'           -- HTML
+      'pyright',       -- Python
+      'gopls',         -- Go
+      'cssls',         -- CSS
+      'html'           -- HTML
   },
   handlers = {
     lsp_zero.default_setup,

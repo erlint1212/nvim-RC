@@ -1,96 +1,172 @@
-local lsp_zero = require('lsp-zero')
+local lsp_zero = require("lsp-zero")
 
 lsp_zero.on_attach(function(client, bufnr)
-  local opts = {buffer = bufnr, remap = false}
-  -- Jumps to the definition of the symbol under the cursor
-  vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
+	local opts = { buffer = bufnr, remap = false }
+	-- Jumps to the definition of the symbol under the cursor
+	vim.keymap.set("n", "gd", function()
+		vim.lsp.buf.definition()
+	end, opts)
 
-  -- Displays hover information (documentation/types) for the symbol under the cursor
-  vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
+	-- Displays hover information (documentation/types) for the symbol under the cursor
+	vim.keymap.set("n", "K", function()
+		vim.lsp.buf.hover()
+	end, opts)
 
-  -- Searches for a symbol (variable/function) across the entire project/workspace
-  vim.keymap.set("n", "<leader>vws", function() vim.lsp.buf.workspace_symbol() end, opts)
+	-- Searches for a symbol (variable/function) across the entire project/workspace
+	vim.keymap.set("n", "<leader>vws", function()
+		vim.lsp.buf.workspace_symbol()
+	end, opts)
 
-  -- Opens a floating window showing the error/warning diagnostic for the current line
-  vim.keymap.set("n", "<leader>vd", function() vim.diagnostic.open_float() end, opts)
+	-- Opens a floating window showing the error/warning diagnostic for the current line
+	vim.keymap.set("n", "<leader>vd", function()
+		vim.diagnostic.open_float()
+	end, opts)
 
-  -- Jumps to the NEXT diagnostic (error/warning) in the buffer
-  -- (Note: Standard Vim convention usually puts 'next' on ']', but your code has it on '[')
-  vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
+	-- Jumps to the NEXT diagnostic (error/warning) in the buffer
+	-- (Note: Standard Vim convention usually puts 'next' on ']', but your code has it on '[')
+	vim.keymap.set("n", "[d", function()
+		vim.diagnostic.goto_next()
+	end, opts)
 
-  -- Jumps to the PREVIOUS diagnostic (error/warning) in the buffer
-  vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
+	-- Jumps to the PREVIOUS diagnostic (error/warning) in the buffer
+	vim.keymap.set("n", "]d", function()
+		vim.diagnostic.goto_prev()
+	end, opts)
 
-  -- Opens "Code Actions" menu (quick fixes, imports, refactors)
-  vim.keymap.set("n", "<leader>vca", function() vim.lsp.buf.code_action() end, opts)
+	-- Opens "Code Actions" menu (quick fixes, imports, refactors)
+	vim.keymap.set("n", "<leader>vca", function()
+		vim.lsp.buf.code_action()
+	end, opts)
 
-  -- Lists all references to the symbol under the cursor (where it is used)
-  vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
+	-- Lists all references to the symbol under the cursor (where it is used)
+	vim.keymap.set("n", "<leader>vrr", function()
+		vim.lsp.buf.references()
+	end, opts)
 
-  -- Renames the symbol under the cursor across the whole project
-  vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
+	-- Renames the symbol under the cursor across the whole project
+	vim.keymap.set("n", "<leader>vrn", function()
+		vim.lsp.buf.rename()
+	end, opts)
 
-  -- [Insert Mode] Shows help for the current function signature (parameters) while typing
-  vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+	-- [Insert Mode] Shows help for the current function signature (parameters) while typing
+	vim.keymap.set("i", "<C-h>", function()
+		vim.lsp.buf.signature_help()
+	end, opts)
 end)
 
 -- to learn how to use mason.nvim with lsp-zero
 -- read this: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guides/integrate-with-mason-nvim.md
-require('mason').setup({})
-require('mason-lspconfig').setup({
-  ensure_installed = {
-      'rust_analyzer', 
-      'lua_ls',
-      'pyright',       -- Python
-      'gopls',         -- Go
-      'cssls',         -- CSS
-      'html'           -- HTML
-  },
-  handlers = {
-    lsp_zero.default_setup,
-    lua_ls = function()
-      local lua_opts = lsp_zero.nvim_lua_ls()
-      require('lspconfig').lua_ls.setup(lua_opts)
-    end,
-  }
+require("mason").setup({})
+require("mason-lspconfig").setup({
+	ensure_installed = {
+		"rust_analyzer",
+		"lua_ls",
+		"pyright", -- Python
+		"gopls", -- Go
+		"cssls", -- CSS
+		"html", -- HTML
+	},
+	handlers = {
+		lsp_zero.default_setup,
+		lua_ls = function()
+			local lua_opts = lsp_zero.nvim_lua_ls()
+			require("lspconfig").lua_ls.setup(lua_opts)
+		end,
+	},
 })
 
-vim.lsp.config('rust_analyzer', {})
-vim.lsp.config('lua_ls', {})
-vim.lsp.config('pyright', {})
-vim.lsp.config('gopls', {})
-vim.lsp.config('cssls', {})
-vim.lsp.config('html', {})
-vim.lsp.config('nil_ls', {})
+vim.lsp.config("rust_analyzer", {})
+vim.lsp.config("lua_ls", {})
+vim.lsp.config("pyright", {})
+vim.lsp.config("gopls", {})
+vim.lsp.config("cssls", {})
+vim.lsp.config("html", {})
+vim.lsp.config("nil_ls", {})
 
-vim.lsp.enable({ 'rust_analyzer', 'lua_ls', 'pyright', 'gopls', 'cssls', 'html', 'nil_ls' })
+vim.lsp.enable({ "rust_analyzer", "lua_ls", "pyright", "gopls", "cssls", "html", "nil_ls" })
 
-local cmp = require('cmp')
-local cmp_select = {behavior = cmp.SelectBehavior.Select}
+local cmp = require("cmp")
+local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
 -- this is the function that loads the extra snippets to luasnip
 -- from rafamadriz/friendly-snippets
-require('luasnip.loaders.from_vscode').lazy_load()
+require("luasnip.loaders.from_vscode").lazy_load()
 
 cmp.setup({
-  sources = {
-    {name = 'path'},
-    {name = 'nvim_lsp'},
-    {name = 'nvim_lua'},
-    {name = 'luasnip', keyword_length = 2},
-    {name = 'buffer', keyword_length = 3},
-    {name = 'kotlin-language-server'},
-  },
-  formatting = lsp_zero.cmp_format({details = false}),
-  mapping = cmp.mapping.preset.insert({
-    ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-    ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-    ['<C-Space>'] = cmp.mapping.complete(),
-  }),
-  snippet = {
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body)
-    end,
-  },
+	sources = {
+		{ name = "path" },
+		{ name = "nvim_lsp" },
+		{ name = "nvim_lua" },
+		{ name = "luasnip", keyword_length = 2 },
+		{ name = "buffer", keyword_length = 3 },
+		{ name = "kotlin-language-server" },
+	},
+	formatting = lsp_zero.cmp_format({ details = false }),
+	mapping = cmp.mapping.preset.insert({
+		["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
+		["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
+		["<C-y>"] = cmp.mapping.confirm({ select = true }),
+		["<C-Space>"] = cmp.mapping.complete(),
+	}),
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
+})
+
+-- :CopyDiagnostics          -> warnings + errors in current buffer
+-- :CopyDiagnostics ERROR    -> only errors
+-- :CopyDiagnostics WARN     -> only warnings
+-- :CopyDiagnostics! WARN    -> bang = all buffers, not just current
+vim.api.nvim_create_user_command("CopyDiagnostics", function(opts)
+	local severity = nil
+	if opts.args ~= "" then
+		severity = vim.diagnostic.severity[opts.args:upper()]
+		if not severity then
+			vim.notify("Unknown severity: " .. opts.args, vim.log.levels.ERROR)
+			return
+		end
+	else
+		severity = { min = vim.diagnostic.severity.WARN }
+	end
+
+	-- bang -> all buffers (nil), otherwise current buffer (0)
+	local bufnr = opts.bang and nil or 0
+	local diags = vim.diagnostic.get(bufnr, { severity = severity })
+
+	if #diags == 0 then
+		vim.notify("No matching diagnostics", vim.log.levels.INFO)
+		return
+	end
+
+	-- stable ordering: file, then line, then col
+	table.sort(diags, function(a, b)
+		if a.bufnr ~= b.bufnr then
+			return a.bufnr < b.bufnr
+		end
+		if a.lnum ~= b.lnum then
+			return a.lnum < b.lnum
+		end
+		return a.col < b.col
+	end)
+
+	local lines = {}
+	for _, d in ipairs(diags) do
+		local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(d.bufnr), ":.")
+		local sev = vim.diagnostic.severity[d.severity] -- number -> "WARN" etc.
+		local src = d.source and (" [" .. d.source .. "]") or ""
+		local msg = d.message:gsub("\n", " ")
+		table.insert(lines, string.format("%s:%d:%d: %s: %s%s", file, d.lnum + 1, d.col + 1, sev, msg, src))
+	end
+
+	local text = table.concat(lines, "\n")
+	vim.fn.setreg("+", text)
+	vim.notify(string.format("Copied %d diagnostics to clipboard", #diags))
+end, {
+	nargs = "?",
+	bang = true,
+	complete = function()
+		return { "ERROR", "WARN", "INFO", "HINT" }
+	end,
 })

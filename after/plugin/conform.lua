@@ -31,11 +31,28 @@ conform.setup({
 	},
 
 	formatters = {
-		sqlfluff = {
-			args = { "fix", "--dialect", "snowflake", "--templater", "dbt", "--ignore", "parsing,templating", "-" },
-			exit_codes = { 0, 1 },
-			cwd = require("conform.util").root_file({ "dbt_project.yml" }),
-		},
+		sqlfluff = function(bufnr)
+			local util = require("conform.util")
+
+			-- local dbt_root = util.root_file({ "dbt_project.yml" })(bufnr)
+			local dbt_root = vim.fs.find("dbt_project.yml", {
+				upward = true,
+				path = vim.api.nvim_buf_get_name(bufnr),
+			})[1]
+			local args = { "fix", "--dialect", "snowflake" }
+
+			if dbt_root then
+				vim.list_extend(args, { "--templater", "dbt" })
+			end
+			vim.list_extend(args, { "--ignore", "parsing,templating", "-" })
+
+			return {
+				args = args,
+				exit_codes = { 0, 1 },
+				cwd = util.root_file({ "dbt_project.yml", ".sqlfluff", ".git" }),
+				require_cwd = false,
+			}
+		end,
 	},
 })
 

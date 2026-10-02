@@ -85,6 +85,30 @@ vim.lsp.config("nil_ls", {})
 
 vim.lsp.enable({ "rust_analyzer", "lua_ls", "pyright", "gopls", "cssls", "html", "nil_ls" })
 
+-- Show diagnostics inline at end of line. Off by default since nvim 0.11.
+vim.diagnostic.config({
+	virtual_text = {
+		spacing = 4,
+		prefix = "■",
+		source = "if_many", -- show "[gopls]" only when several sources hit the buffer
+		format = function(d)
+			return d.message:match("[^\n]*") -- first line only, keeps it to one row
+		end,
+	},
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "E",
+			[vim.diagnostic.severity.WARN] = "W",
+			[vim.diagnostic.severity.INFO] = "I",
+			[vim.diagnostic.severity.HINT] = "H",
+		},
+	},
+	underline = true,
+	severity_sort = true, -- error wins over warning on the same line
+	update_in_insert = false, -- don't redraw while typing; updates on leaving insert
+	float = { border = "rounded", source = true }, -- <leader>vd still shows full message
+})
+
 local cmp = require("cmp")
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
@@ -163,6 +187,152 @@ vim.api.nvim_create_user_command("CopyDiagnostics", function(opts)
 	local text = table.concat(lines, "\n")
 	vim.fn.setreg("+", text)
 	vim.notify(string.format("Copied %d diagnostics to clipboard", #diags))
+end, {
+	nargs = "?",
+	bang = true,
+	complete = function()
+		return { "ERROR", "WARN", "INFO", "HINT" }
+	end,
+})
+
+-- :CopyDiagnostics          -> warnings + errors, whole project
+-- :CopyDiagnostics ERROR    -> only errors
+-- :CopyDiagnostics!         -> keep the loaded buffers around instead of wiping them
+vim.api.nvim_create_user_command("CopyDiagnosticsProject", function(opts)
+	local severity
+	if opts.args ~= "" then
+		severity = vim.diagnostic.severity[opts.args:upper()]
+		if not severity then
+			vim.notify("Unknown severity: " .. opts.args, vim.log.levels.ERROR)
+			return
+		end
+	else
+		severity = { min = vim.diagnostic.severity.WARN }
+	end
+
+	-- 1. Enumerate tracked files. Adjust to taste; empty = every tracked file.
+	local patterns = {
+		"*.lua",
+		"*.py",
+		"*.js",
+		"*.ts",
+		"*.rs",
+		"*.kt",
+		"*.kts",
+		"*.sql",
+		"*.nix",
+		"*.go",
+		"*.tf",
+		"*.tfvars",
+		"*.hcl",
+		"*.tofu",
+		"*.tofuvars",
+	}
+	local quoted = {}
+	for _, p in ipairs(patterns) do
+		table.insert(quoted, "'" .. p .. "'")
+	end
+	local handle = io.popen("git ls-files -- " .. table.concat(quoted, " "))
+	if not handle then
+		vim.notify("Failed to run git ls-files", vim.log.levels.ERROR)
+		return
+	end
+	local out = handle:read("*a")
+	handle:close()
+
+	local files = {}
+	for f in out:gmatch("[^\r\n]+") do
+		table.insert(files, f)
+	end
+	if #files == 0 then
+		vim.notify("No files found", vim.log.levels.WARN)
+		return
+	end
+
+	local LIMIT = 500
+	if #files > LIMIT then
+		local ok = vim.fn.confirm(
+			string.format("%d files. Loading all of them may be slow. Continue?", #files),
+			"&Yes\n&No",
+			2
+		)
+		if ok ~= 1 then
+			return
+		end
+	end
+
+	-- 2. Track which buffers we create so we can clean up afterwards.
+	local pre_existing = {}
+	for _, b in ipairs(vim.api.nvim_list_bufs()) do
+		pre_existing[b] = true
+	end
+
+	local created = {}
+	for _, file in ipairs(files) do
+		local bufnr = vim.fn.bufadd(file)
+		if not pre_existing[bufnr] then
+			table.insert(created, bufnr)
+		end
+		vim.fn.bufload(bufnr) -- fires FileType -> LSP attaches
+		-- nvim-lint doesn't hook bufload, so kick it manually
+		pcall(function()
+			vim.api.nvim_buf_call(bufnr, function()
+				require("lint").try_lint()
+			end)
+		end)
+	end
+
+	-- 3. Wait for diagnostics to settle: poll until the count stops changing.
+	vim.notify(string.format("Loaded %d files, waiting for diagnostics...", #files))
+	local last, stable = -1, 0
+	vim.wait(30000, function()
+		local n = #vim.diagnostic.get(nil)
+		if n == last then
+			stable = stable + 1
+		else
+			last, stable = n, 0
+		end
+		return stable >= 6 -- ~1.2s with no change
+	end, 200)
+
+	-- 4. Collect.
+	local diags = vim.diagnostic.get(nil, { severity = severity })
+	if #diags == 0 then
+		vim.notify("No matching diagnostics", vim.log.levels.INFO)
+	else
+		table.sort(diags, function(a, b)
+			local fa = vim.api.nvim_buf_get_name(a.bufnr)
+			local fb = vim.api.nvim_buf_get_name(b.bufnr)
+			if fa ~= fb then
+				return fa < fb
+			end
+			if a.lnum ~= b.lnum then
+				return a.lnum < b.lnum
+			end
+			return a.col < b.col
+		end)
+
+		local lines = {}
+		for _, d in ipairs(diags) do
+			local file = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(d.bufnr), ":.")
+			local sev = vim.diagnostic.severity[d.severity]
+			local src = d.source and (" [" .. d.source .. "]") or ""
+			local msg = d.message:gsub("%s*\n%s*", " ")
+			table.insert(lines, string.format("%s:%d:%d: %s: %s%s", file, d.lnum + 1, d.col + 1, sev, msg, src))
+		end
+
+		vim.fn.setreg("+", table.concat(lines, "\n"))
+		vim.notify(string.format("Copied %d diagnostics from %d files", #diags, #files))
+	end
+
+	-- 5. Clean up buffers we opened, unless bang.
+	if not opts.bang then
+		for _, b in ipairs(created) do
+			if vim.api.nvim_buf_is_valid(b) and not vim.bo[b].modified then
+				pcall(vim.api.nvim_buf_delete, b, { force = false })
+			end
+		end
+	end
 end, {
 	nargs = "?",
 	bang = true,

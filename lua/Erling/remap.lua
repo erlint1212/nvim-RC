@@ -83,3 +83,6 @@ vim.keymap.set(
 -- Spellchecker
 vim.keymap.set("n", "<leader>se", ":setlocal spell spelllang=en_us<cr>", { desc = "spelling en", noremap = true })
 vim.keymap.set("n", "<leader>sd", ":setlocal nospell<cr>", { desc = "spelling disable", noremap = true })
+
+-- Make it so ; isnt such a pain to write
+vim.keymap.set("i", "ø", ";")
